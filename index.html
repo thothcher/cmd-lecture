@@ -1,0 +1,925 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Terminal vs Desktop</title>
+<meta name="description" content="A front-end development lecture: the terminal (CMD, PowerShell, Bash) compared with the desktop GUI, with a CMD cheat sheet and a quiz.">
+<meta name="theme-color" content="#0A1730">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="css/style.css">
+<script>
+  /* Apply the saved or system theme before first paint */
+  (function () {
+    var t = null;
+    var m = /[?&]theme=(light|dark)/.exec(location.search);
+    if (m) t = m[1];
+    else try { t = localStorage.getItem('tvd-theme'); } catch (e) {}
+    if (t !== 'light' && t !== 'dark') {
+      t = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    }
+    document.documentElement.setAttribute('data-theme', t);
+  })();
+</script>
+<script src="js/app.js" defer></script>
+</head>
+<body>
+
+<div class="progress" aria-hidden="true"><span class="progress__bar"></span></div>
+
+<main class="stage" id="stage" aria-label="Terminal vs Desktop presentation">
+<div class="deck" id="deck">
+
+<!-- 1 · Cover -->
+<section class="slide slide--photo" data-title="Terminal vs Desktop" data-footer="none">
+  <img class="slide__bg" src="assets/img/cover-laptop-code.jpg" alt="">
+  <div class="slide__scrim"></div>
+  <div class="os-logos" role="img" aria-label="Windows, macOS and Linux logos">
+    <svg class="logo logo--40" aria-hidden="true"><use href="#lg-windows"/></svg>
+    <svg class="logo logo--40" aria-hidden="true"><use href="#lg-apple"/></svg>
+    <svg class="logo logo--40" aria-hidden="true"><use href="#lg-linux"/></svg>
+  </div>
+  <p class="eyebrow">Front-End Development · Developer Tools</p>
+  <h1 class="display">Terminal<br>vs Desktop</h1>
+  <p class="subtitle">How developers talk to the operating system: by clicking, and by typing.</p>
+  <div class="row"><p class="prompt-pill"><span class="p">C:\Users\student&gt;</span> cd frontend-course<span class="cursor" aria-hidden="true"></span></p></div>
+  <p class="start-hint">Click, press → or swipe to begin</p>
+  <aside class="notes">Welcome. Today we compare two ways of working with a computer: the desktop, a graphical interface you already use every day, and the terminal, a text interface every front-end developer uses daily. By the end of the lecture you will know what CMD is, how the different terminals and shells differ, what the operating system actually does when you click or type, the strengths and weaknesses of each approach, what the latest survey data says, and the commands you need to get started. We finish with an interactive quiz and a practice task. The three logos at the top are the three operating systems you will meet as a developer: Windows, macOS and Linux.</aside>
+</section>
+
+<!-- 2 · Agenda -->
+<section class="slide" data-title="Today's Route">
+  <div class="head">
+    <p class="eyebrow">Lecture map</p>
+    <h2 class="title">Today's Route</h2>
+  </div>
+  <div class="col">
+    <div class="agenda-row"><p class="agenda-row__n">01</p><p class="agenda-row__t">Two ways to use a computer</p><p class="agenda-row__d">GUI and CLI side by side</p></div>
+    <div class="agenda-row"><p class="agenda-row__n">02</p><p class="agenda-row__t">Terminal, shell, kernel and CMD</p><p class="agenda-row__d">The words everyone mixes up</p></div>
+    <div class="agenda-row"><p class="agenda-row__n">03</p><p class="agenda-row__t">Under the hood</p><p class="agenda-row__d">What the OS does when you click or type</p></div>
+    <div class="agenda-row"><p class="agenda-row__n">04</p><p class="agenda-row__t">Terminal families</p><p class="agenda-row__d">Shells, and the apps that host them</p></div>
+    <div class="agenda-row"><p class="agenda-row__n">05</p><p class="agenda-row__t">Compare and choose</p><p class="agenda-row__d">Dialects, a workflow, pros, cons and trends</p></div>
+    <div class="agenda-row"><p class="agenda-row__n">06</p><p class="agenda-row__t">Commands and quiz</p><p class="agenda-row__d">Cheat sheets, safe habits, then test yourself</p></div>
+  </div>
+  <aside class="notes">Here is the route for today, in six stops. First the big picture: the two ways a person can use a computer. Then the vocabulary, because terminal, shell, console and CMD get mixed up all the time. Third, we look under the hood at what the operating system really does when you click an icon or type a command. Fourth, we meet the different shells and terminal apps. Fifth, we compare them honestly and look at real survey data on what developers use today. Last, the practical part: a CMD cheat sheet you can click to copy, the commands front-end developers type every day, safety habits, and a quiz.</aside>
+</section>
+
+<!-- 3 · Two ways -->
+<section class="slide" data-title="Two Ways to Talk to a Computer">
+  <div class="head">
+    <p class="eyebrow">01 / Two ways</p>
+    <h2 class="title">Two Ways to Talk to a Computer</h2>
+  </div>
+  <div class="row g32">
+    <div class="split-card">
+      <img src="assets/img/desktop-imac.jpg" alt="White iMac on a tidy desk with a keyboard and mouse">
+      <div class="split-card__body">
+        <p class="eyebrow">GUI · Desktop</p>
+        <h3 class="h3">Graphical User Interface</h3>
+        <p class="t30">You point and click on things the OS draws for you: windows, icons, menus. Every option is visible.</p>
+        <div class="spacer"></div>
+        <p class="label label--muted">Example</p>
+        <div class="row"><p class="ui-chip">Double-click › Projects folder</p></div>
+      </div>
+    </div>
+    <div class="split-card">
+      <img src="assets/img/terminal-htop.jpg" alt="Close-up of a terminal window with code and a system monitor">
+      <div class="split-card__body">
+        <p class="eyebrow">CLI · Terminal</p>
+        <h3 class="h3">Command-Line Interface</h3>
+        <p class="t30">You type a command and press Enter. The computer answers in text. Fast, precise, repeatable.</p>
+        <div class="spacer"></div>
+        <p class="label label--muted">Example</p>
+        <div class="row"><p class="code-chip"><span class="p">C:\Users\you&gt;</span> cd Projects</p></div>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">There are two ways to tell a computer what to do. The first is the GUI, the graphical user interface: the desktop, windows, icons, menus and the mouse pointer. The operating system draws every option for you, so you can discover things just by looking. The second is the CLI, the command-line interface: you type a command as text, press Enter, and the computer answers with text. Nothing is drawn for you, so you have to know what to ask, but once you know, it is very fast and very precise. Both examples on the slide do exactly the same thing: open the Projects folder. Ask the class: which one do you use every day? Almost everyone says the GUI. By the end of today you will see why professional developers use both.</aside>
+</section>
+
+<!-- 4 · Layers -->
+<section class="slide" data-title="Terminal, Shell and Kernel">
+  <div class="head">
+    <p class="eyebrow">02 / Vocabulary</p>
+    <h2 class="title">Terminal, Shell and Kernel</h2>
+  </div>
+  <div class="row g20">
+    <div class="card layer-card">
+      <p class="label">Layer 1 · window</p>
+      <h3 class="h3">Terminal</h3>
+      <p class="t24">Draws text, captures your keys, handles tabs, fonts and colors. It does not understand commands.</p>
+      <div class="spacer"></div>
+      <div class="logo-row">
+        <svg class="logo" role="img" aria-label="Windows Terminal"><use href="#lg-wt"/></svg>
+        <svg class="logo" role="img" aria-label="iTerm2"><use href="#lg-iterm2"/></svg>
+        <svg class="logo" role="img" aria-label="Visual Studio Code"><use href="#lg-vscode"/></svg>
+      </div>
+      <p class="t24 muted">Windows Terminal, iTerm2, VS Code</p>
+    </div>
+    <span class="arrow" aria-hidden="true"></span>
+    <div class="card layer-card">
+      <p class="label">Layer 2 · interpreter</p>
+      <h3 class="h3">Shell</h3>
+      <p class="t24">Reads the line you typed, expands variables, finds the program and asks the OS to start it.</p>
+      <div class="spacer"></div>
+      <div class="logo-row">
+        <svg class="logo" role="img" aria-label="PowerShell"><use href="#lg-powershell"/></svg>
+        <svg class="logo" role="img" aria-label="GNU Bash"><use href="#lg-bash"/></svg>
+        <svg class="logo" role="img" aria-label="Zsh"><use href="#lg-zsh"/></svg>
+      </div>
+      <p class="t24 muted">cmd.exe, PowerShell, Bash, Zsh</p>
+    </div>
+    <span class="arrow" aria-hidden="true"></span>
+    <div class="card layer-card">
+      <p class="label">Layer 3 · core</p>
+      <h3 class="h3">OS Kernel</h3>
+      <p class="t24">Creates processes, manages memory and files, talks to the hardware. The desktop uses this same kernel.</p>
+      <div class="spacer"></div>
+      <div class="logo-row">
+        <svg class="logo" role="img" aria-label="Windows"><use href="#lg-windows"/></svg>
+        <svg class="logo" role="img" aria-label="Apple macOS"><use href="#lg-apple"/></svg>
+        <svg class="logo" role="img" aria-label="Linux"><use href="#lg-linux"/></svg>
+      </div>
+      <p class="t24 muted">Windows NT, macOS XNU, Linux</p>
+    </div>
+  </div>
+  <div class="row g32">
+    <div class="card card--ink grow g12" style="padding:24px 34px">
+      <h3 class="h3s">Prompt</h3>
+      <p class="t24">The shell's way of saying "ready for your command":</p>
+      <p class="mono" style="font-size:24px;color:var(--term-prompt)">C:\Users\you&gt;&nbsp;&nbsp;&nbsp;PS C:\Users\you&gt;&nbsp;&nbsp;&nbsp;you@laptop:~$</p>
+    </div>
+    <div class="card grow g12" style="padding:24px 34px">
+      <h3 class="h3s">Console</h3>
+      <p class="t24">The older word for a program's text input and output. On Windows, the classic console window is conhost.exe.</p>
+    </div>
+  </div>
+  <aside class="notes">Students mix these words up all the time, so let's fix them once. The terminal is only a window: it shows text, captures your keystrokes, and handles tabs, fonts and colors. It does not understand a single command. Inside the terminal runs a shell. The shell is the interpreter: it reads the line you typed, expands variables, finds the right program and asks the operating system to start it. CMD, PowerShell, Bash and Zsh are all shells. Below everything sits the kernel, the core of the operating system, which actually creates processes, manages memory and files, and talks to the hardware. A simple analogy: the terminal is a chat app, the shell is the person you are chatting with, and the kernel is the team that actually does the work. Two more words: the prompt is the text the shell prints when it is ready, like C:\Users\you> in CMD or a dollar sign in Bash. Console is an older word for a program's text input and output; on Windows the classic black console window is conhost.exe.</aside>
+</section>
+
+<!-- 5 · What is CMD -->
+<section class="slide slide--alt" data-title="What Is CMD?">
+  <div class="head">
+    <p class="eyebrow">02 / Vocabulary</p>
+    <h2 class="title">What Is CMD?</h2>
+  </div>
+  <div class="row g64 ai-start">
+    <div class="col g40" style="width:760px">
+      <p class="lead"><span class="ink strong">cmd.exe</span>, the Windows Command Prompt: a shell that runs typed commands and batch scripts (.bat, .cmd).</p>
+      <div class="col">
+        <div class="tl-row"><p class="tl-row__y">1981</p><p class="tl-row__t">MS-DOS ships COMMAND.COM, the ancestor of CMD</p></div>
+        <div class="tl-row"><p class="tl-row__y">1987</p><p class="tl-row__t">cmd.exe appears in OS/2, then in Windows NT (1993)</p></div>
+        <div class="tl-row"><p class="tl-row__y">2006</p><p class="tl-row__t">PowerShell arrives as the modern successor</p></div>
+        <div class="tl-row"><p class="tl-row__y">Today</p><p class="tl-row__t">Still in every Windows 11 PC: great for the basics</p></div>
+      </div>
+    </div>
+    <div class="term grow">
+      <div class="term__bar"><svg class="logo logo--28" aria-hidden="true" style="color:var(--term-dim)"><use href="#lg-wt"/></svg>Command Prompt</div>
+<div class="term__body"><span class="p">C:\Users\student&gt;</span> <span class="c">cd Desktop\my-site</span>
+<span class="p">C:\Users\student\Desktop\my-site&gt;</span> <span class="c">dir /b</span>
+index.html
+style.css
+script.js
+<span class="p">C:\Users\student\Desktop\my-site&gt;</span> <span class="c">echo Hello, CMD!</span>
+Hello, CMD!
+<span class="p">C:\Users\student\Desktop\my-site&gt;</span> <span class="cursor" aria-hidden="true"></span></div>
+    </div>
+  </div>
+  <aside class="notes">CMD, short for cmd.exe, is the Windows Command Prompt. It is a shell: it reads what you type and runs it. It can also run batch scripts, files ending in .bat or .cmd, which are simply lists of commands. Its family tree goes back to COMMAND.COM in MS-DOS in 1981. cmd.exe itself appeared in OS/2 in 1987 and came to Windows with Windows NT in 1993. In 2006 Microsoft released PowerShell as its modern successor, and today Windows 11 opens Windows Terminal with PowerShell by default. But CMD is still installed on every Windows PC, it starts instantly, and it is perfect for learning the basics. On the right is a real session: we move into a folder with cd, list the files with dir /b, where /b means bare names only, and print text with echo. Point out the prompt: it always shows the folder you are in.</aside>
+</section>
+
+<!-- 6 · Under the hood -->
+<section class="slide" data-title="What Happens When You Click or Type">
+  <div class="head">
+    <p class="eyebrow">03 / Under the hood</p>
+    <h2 class="title">What Happens When You Click or Type</h2>
+  </div>
+  <div class="row g12">
+    <div class="col g40 grow">
+      <div class="col g12">
+        <p class="label">Desktop road · double-click the VS Code icon</p>
+        <div class="row g12">
+          <div class="step"><p class="step__t"><b>1</b>Input event</p><p class="step__d">Your click reaches Windows as an input message</p></div>
+          <span class="arrow arrow--sm" aria-hidden="true"></span>
+          <div class="step"><p class="step__t"><b>2</b>explorer.exe</p><p class="step__d">The GUI shell works out which icon you hit</p></div>
+          <span class="arrow arrow--sm" aria-hidden="true"></span>
+          <div class="step"><p class="step__t"><b>3</b>API call</p><p class="step__d">ShellExecute, then CreateProcess for Code.exe</p></div>
+          <span class="arrow arrow--sm" aria-hidden="true"></span>
+        </div>
+      </div>
+      <div class="col g12">
+        <p class="label">Terminal road · type node app.js + Enter</p>
+        <div class="row g12">
+          <div class="step"><p class="step__t"><b>1</b>Keystrokes</p><p class="step__d">Windows Terminal hands your line to cmd.exe</p></div>
+          <span class="arrow arrow--sm" aria-hidden="true"></span>
+          <div class="step"><p class="step__t"><b>2</b>Parsing</p><p class="step__d">Program: node. Argument: app.js</p></div>
+          <span class="arrow arrow--sm" aria-hidden="true"></span>
+          <div class="step"><p class="step__t"><b>3</b>PATH lookup</p><p class="step__d">Finds node.exe, then calls CreateProcess</p></div>
+          <span class="arrow arrow--sm" aria-hidden="true"></span>
+        </div>
+      </div>
+    </div>
+    <div class="card card--ink g16" style="width:380px;padding:32px">
+      <p class="label">Both roads end here</p>
+      <h3 class="h3">OS Kernel</h3>
+      <p class="t24">Creates the process, gives it memory, opens files and schedules the CPU.</p>
+      <div class="spacer"></div>
+      <p class="t24" style="color:var(--term-text)">Then the GUI app draws a window, and the CLI app prints text to stdout.</p>
+    </div>
+  </div>
+  <p class="t24" style="max-width:1400px">The desktop is a program too: explorer.exe is literally called the Windows shell. On macOS and Linux, shells start programs with fork() and exec(): different names, same idea.</p>
+  <aside class="notes">This is the most important technical idea of the lecture. Follow the top road first. You double-click the VS Code icon. The mouse click arrives in Windows as an input message. explorer.exe, the program that draws your desktop and taskbar and is officially called the Windows shell, figures out which icon you clicked. It then calls a Windows API, ShellExecute, which ends in CreateProcess for Code.exe. Now the bottom road. You type node app.js and press Enter. Windows Terminal passes that line to the shell, here cmd.exe. The shell splits it into the program, node, and the argument, app.js. It searches the folders listed in the PATH variable, finds node.exe, and calls the very same CreateProcess. Both roads end at the kernel, which creates the process, gives it memory, opens files and schedules it on the CPU. The only difference is what happens next: a GUI program draws a window, a command-line program prints text back to the terminal through standard output. So the desktop is not magic, it is just another program asking the kernel for the same services. On macOS and Linux the system calls are named fork and exec, but the idea is identical.</aside>
+</section>
+
+<!-- 7 · Anatomy -->
+<section class="slide slide--alt" data-title="Anatomy of a Command">
+  <div class="head">
+    <p class="eyebrow">03 / Under the hood</p>
+    <h2 class="title">Anatomy of a Command</h2>
+  </div>
+  <div class="col g24">
+    <p class="mono muted" style="font-size:30px">C:\Users\you\my-app&gt;</p>
+    <div class="row g40">
+      <div class="token" style="--tok:var(--accent);width:260px">
+        <p class="token__word">npm</p><div class="token__bar" style="width:115px"></div>
+        <p class="token__label">Program</p><p class="t24">Which tool to run. The shell finds it on PATH.</p>
+      </div>
+      <div class="token" style="--tok:var(--ink);width:340px">
+        <p class="token__word">install</p><div class="token__bar" style="width:269px"></div>
+        <p class="token__label">Subcommand</p><p class="t24">What you want the tool to do.</p>
+      </div>
+      <div class="token" style="--tok:var(--tok-arg);width:300px">
+        <p class="token__word">vite</p><div class="token__bar" style="width:154px"></div>
+        <p class="token__label">Argument</p><p class="t24">What to act on: here, the package name.</p>
+      </div>
+      <div class="token" style="--tok:var(--tok-flag);width:480px">
+        <p class="token__word">--save-dev</p><div class="token__bar" style="width:384px"></div>
+        <p class="token__label">Flag / option</p><p class="t24">Starts with - or --. Changes the behavior: save it as a dev dependency.</p>
+      </div>
+    </div>
+  </div>
+  <div class="spacer"></div>
+  <div class="row g24">
+    <div class="card card--tight grow"><h3 class="h3s mono">PATH</h3><p class="t24">The list of folders the shell searches. "is not recognized" means the program is not on PATH.</p></div>
+    <div class="card card--tight grow"><h3 class="h3s mono">Exit code</h3><p class="t24">Every program ends with a number: 0 means success, anything else is an error. CMD keeps it in %ERRORLEVEL%.</p></div>
+    <div class="card card--tight grow"><h3 class="h3s mono">Streams</h3><p class="t24">stdin goes in, stdout is normal output, stderr is error output. Redirect with &gt; file.txt</p></div>
+  </div>
+  <aside class="notes">Every command has the same grammar, whatever the shell. Take npm install vite --save-dev, a command you will type in this course. The first word is the program: npm. The shell looks for it in the folders listed in the PATH environment variable. Next comes a subcommand, install, which tells the tool what to do; not every program has subcommands, but npm and git do. Then the argument, vite, which is the thing to act on. Last, a flag or option: it starts with one or two dashes and changes the behavior. Here --save-dev records Vite as a development dependency in package.json. Three hidden concepts sit behind every command. PATH: if you ever see "is not recognized as an internal or external command", the program is not installed or not on PATH. Exit code: every program returns a number when it finishes, 0 means success; in CMD you can read it with echo %ERRORLEVEL%. Streams: input comes in on stdin, normal output goes to stdout, errors go to stderr, and you can redirect output into a file with the greater-than sign, for example dir > files.txt.</aside>
+</section>
+
+<!-- 8 · Shells -->
+<section class="slide" data-title="Shells: The Languages You Type">
+  <div class="head">
+    <p class="eyebrow">04 / Terminal families</p>
+    <h2 class="title">Shells: The Languages You Type</h2>
+  </div>
+  <div class="col" role="table" aria-label="Comparison of shells">
+    <div class="shell-grid shell-grid--head" role="row">
+      <p class="label label--muted" role="columnheader">Shell</p>
+      <p class="label label--muted" role="columnheader">Runs on</p>
+      <p class="label label--muted" role="columnheader">Since</p>
+      <p class="label label--muted" role="columnheader">What makes it different</p>
+    </div>
+    <div class="shell-grid" role="row">
+      <div class="row g16 ai-center" role="cell"><svg class="logo logo--40" aria-hidden="true"><use href="#lg-windows"/></svg><p class="shell-name">cmd.exe</p></div>
+      <p class="t24" role="cell">Windows</p>
+      <p class="mono accent" style="font-size:24px" role="cell">1987</p>
+      <p class="t24" role="cell">Simple text commands and .bat batch files. Built into every Windows PC, but limited for real scripting.</p>
+    </div>
+    <div class="shell-grid" role="row">
+      <div class="row g16 ai-center" role="cell"><svg class="logo logo--40" aria-hidden="true"><use href="#lg-powershell"/></svg><p class="shell-name">PowerShell</p></div>
+      <p class="t24" role="cell">Windows · macOS · Linux</p>
+      <p class="mono accent" style="font-size:24px" role="cell">2006</p>
+      <p class="t24" role="cell">Passes objects, not plain text. Verb-Noun commands such as Get-ChildItem. Default profile in Windows Terminal.</p>
+    </div>
+    <div class="shell-grid" role="row">
+      <div class="row g16 ai-center" role="cell"><svg class="logo logo--40" aria-hidden="true"><use href="#lg-bash"/></svg><p class="shell-name">Bash</p></div>
+      <p class="t24" role="cell">Linux · macOS · Git Bash</p>
+      <p class="mono accent" style="font-size:24px" role="cell">1989</p>
+      <p class="t24" role="cell">The classic Unix shell. Most tutorials, servers, Docker images and CI pipelines expect it.</p>
+    </div>
+    <div class="shell-grid" role="row">
+      <div class="row g16 ai-center" role="cell"><svg class="logo logo--40" aria-hidden="true"><use href="#lg-zsh"/></svg><p class="shell-name">Zsh</p></div>
+      <p class="t24" role="cell">macOS · Linux</p>
+      <p class="mono accent" style="font-size:24px" role="cell">1990</p>
+      <p class="t24" role="cell">Bash-like, with smarter completion, themes and plugins (Oh My Zsh). Default on Macs since 2019.</p>
+    </div>
+    <div class="shell-grid" role="row">
+      <div class="row g16 ai-center" role="cell"><svg class="logo logo--40" aria-hidden="true"><use href="#lg-ubuntu"/></svg><p class="shell-name">WSL + Bash</p></div>
+      <p class="t24" role="cell">Windows 10 and 11</p>
+      <p class="mono accent" style="font-size:24px" role="cell">2016</p>
+      <p class="t24" role="cell">A real Linux inside Windows. Run Bash and Linux tools without leaving your Windows PC.</p>
+    </div>
+  </div>
+  <aside class="notes">When people say "types of terminal", they usually mean different shells, so let's meet the main ones. CMD is the classic Windows shell: simple, always there, good for basics, weak for serious scripting. PowerShell is Microsoft's modern shell. Its big idea is that commands pass objects, not plain text, so you can filter and sort real data. Commands follow a Verb-Noun pattern like Get-ChildItem, and since PowerShell 7 it also runs on macOS and Linux. Bash is the classic Unix shell from 1989. Most tutorials, servers, Docker containers and CI pipelines assume Bash, and on Windows you get it through Git Bash. Zsh is very similar to Bash but friendlier, with better completion and plugins, and it has been the default shell on macOS since Catalina in 2019. Finally WSL, the Windows Subsystem for Linux: not a shell itself, but a real Linux running inside Windows, so you can use Bash and Linux tools directly. Key message: the commands you type depend on the shell, not on the window.</aside>
+</section>
+
+<!-- 9 · Terminal apps -->
+<section class="slide" data-title="Terminal Apps: Hosts for Shells">
+  <div class="head">
+    <p class="eyebrow">04 / Terminal families</p>
+    <h2 class="title">Terminal Apps: Hosts for Shells</h2>
+  </div>
+  <div class="row g40">
+    <img src="assets/img/terminal-htop.jpg" alt="Close-up of a terminal window with code and a system monitor" style="width:400px;height:590px;object-fit:cover;border-radius:20px;flex:none">
+    <div class="col g20 grow">
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:20px">
+        <div class="card card--tight">
+          <div class="row g16 ai-center"><svg class="logo logo--40" aria-hidden="true"><use href="#lg-wt"/></svg><h3 class="h3s">Windows Terminal</h3></div>
+          <p class="mono accent" style="font-size:24px">Windows 10 / 11</p>
+          <p class="t24">Tabs and panes for CMD, PowerShell and WSL. Default terminal in Windows 11.</p>
+        </div>
+        <div class="card card--tight">
+          <div class="row g16 ai-center"><svg class="logo logo--40" aria-hidden="true"><use href="#lg-apple"/></svg><svg class="logo logo--40" aria-hidden="true"><use href="#lg-iterm2"/></svg><h3 class="h3s">Terminal and iTerm2</h3></div>
+          <p class="mono accent" style="font-size:24px">macOS</p>
+          <p class="t24">Terminal ships with every Mac; iTerm2 adds split panes and search.</p>
+        </div>
+        <div class="card card--tight">
+          <div class="row g16 ai-center"><svg class="logo logo--40" aria-hidden="true"><use href="#lg-gnometerm"/></svg><h3 class="h3s">GNOME Terminal</h3></div>
+          <p class="mono accent" style="font-size:24px">Linux</p>
+          <p class="t24">Default on Ubuntu and Fedora. KDE desktops ship Konsole instead.</p>
+        </div>
+        <div class="card card--tight">
+          <div class="row g16 ai-center"><svg class="logo logo--40" aria-hidden="true"><use href="#lg-vscode"/></svg><h3 class="h3s">VS Code terminal</h3></div>
+          <p class="mono accent" style="font-size:24px">Any OS</p>
+          <p class="t24">A terminal inside your editor: press Ctrl + ` and run npm next to your code.</p>
+        </div>
+      </div>
+      <div class="card card--ink row g24 ai-center" style="padding:24px 32px">
+        <p class="label" style="white-space:nowrap">Key idea</p>
+        <p class="t24 grow" style="color:var(--term-text)">The app is only the window. The shell runs inside it, so one terminal can host many shells, one per tab.</p>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">The second meaning of "types of terminal" is the terminal application, the window itself. On Windows, use Windows Terminal: it has tabs and split panes, and one tab can run CMD while the next runs PowerShell or Ubuntu through WSL. It is the default terminal in Windows 11. On a Mac you get the built-in Terminal app, and many developers install iTerm2 for split panes and better search. On Linux, Ubuntu and Fedora ship GNOME Terminal, and KDE desktops ship Konsole. And the one you will use most in this course: the integrated terminal in VS Code. Press Control and the backtick key to open it, and you can run npm commands right next to your code. The key idea: the terminal app and the shell are independent. You can choose any window and run any shell inside it.</aside>
+</section>
+
+<!-- 10 · Dialects -->
+<section class="slide" data-title="One Task, Three Dialects">
+  <div class="head">
+    <div class="row jc-between ai-baseline">
+      <p class="eyebrow">05 / Compare and choose</p>
+      <p class="mono muted" style="font-size:24px">click any command to copy it</p>
+    </div>
+    <h2 class="title">One Task, Three Dialects</h2>
+  </div>
+  <table class="cmp">
+    <thead>
+      <tr><th style="width:21%">Task</th><th style="width:22%">CMD</th><th style="width:33%">PowerShell</th><th style="width:24%">Bash / Zsh</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Where am I?</td><td><button class="copy" type="button">cd</button></td><td><button class="copy" type="button" data-copy="Get-Location">Get-Location (pwd)</button></td><td><button class="copy" type="button">pwd</button></td></tr>
+      <tr><td>List files</td><td><button class="copy" type="button">dir</button></td><td><button class="copy" type="button" data-copy="Get-ChildItem">Get-ChildItem (ls)</button></td><td><button class="copy" type="button">ls -la</button></td></tr>
+      <tr><td>Enter a folder</td><td><button class="copy" type="button">cd src</button></td><td><button class="copy" type="button" data-copy="Set-Location src">Set-Location src (cd)</button></td><td><button class="copy" type="button">cd src</button></td></tr>
+      <tr><td>New folder</td><td><button class="copy" type="button">mkdir src</button></td><td><button class="copy" type="button">New-Item src -ItemType Directory</button></td><td><button class="copy" type="button">mkdir src</button></td></tr>
+      <tr><td>New empty file</td><td><button class="copy" type="button">type nul &gt; a.txt</button></td><td><button class="copy" type="button">New-Item a.txt</button></td><td><button class="copy" type="button">touch a.txt</button></td></tr>
+      <tr><td>Copy a file</td><td><button class="copy" type="button">copy a.txt b.txt</button></td><td><button class="copy" type="button">Copy-Item a.txt b.txt</button></td><td><button class="copy" type="button">cp a.txt b.txt</button></td></tr>
+      <tr><td>Delete a file</td><td><button class="copy" type="button">del a.txt</button></td><td><button class="copy" type="button">Remove-Item a.txt</button></td><td><button class="copy" type="button">rm a.txt</button></td></tr>
+      <tr><td>Clear screen</td><td><button class="copy" type="button">cls</button></td><td><button class="copy" type="button" data-copy="Clear-Host">Clear-Host (cls)</button></td><td><button class="copy" type="button">clear</button></td></tr>
+      <tr><td>Show PATH</td><td><button class="copy" type="button">echo %PATH%</button></td><td><button class="copy" type="button">$env:Path</button></td><td><button class="copy" type="button">echo $PATH</button></td></tr>
+    </tbody>
+  </table>
+  <p class="t24" style="max-width:1400px">PowerShell understands many CMD and Bash names as aliases (ls, dir, cd, cls), but the options differ: <span class="warn strong">ls -la</span> works in Bash and fails in PowerShell.</p>
+  <aside class="notes">Here is why the shell matters: the same task is spelled differently in each shell. Read a few rows aloud. To see where you are, CMD uses cd with nothing after it, PowerShell uses Get-Location, and Bash uses pwd, print working directory. To list files: dir, Get-ChildItem, ls. To create an empty file, Bash has touch, while CMD needs a small trick: type nul and redirect it into a file. PowerShell commands are long because they follow the Verb-Noun pattern, but PowerShell also ships short aliases, shown in brackets, so ls, dir, cd and cls work there too. The trap is the options: ls -la is perfectly normal in Bash but fails in PowerShell, because the alias only renames the command, not its flags. When you copy a command from a tutorial, first check which shell the tutorial is written for. Tip for the live demo: every command in the table is clickable and copies itself to the clipboard.</aside>
+</section>
+
+<!-- 11 · Project both ways -->
+<section class="slide" data-title="Starting a Front-End Project">
+  <div class="head">
+    <p class="eyebrow">05 / Compare and choose</p>
+    <h2 class="title">Starting a Front-End Project</h2>
+  </div>
+  <div class="row g32">
+    <div class="card grow" style="padding:32px 36px">
+      <div class="row g16 ai-center"><svg class="logo logo--32 accent" aria-hidden="true"><use href="#lg-windows"/></svg><p class="eyebrow">Desktop route</p></div>
+      <div class="rows">
+        <div><p class="num">1</p><p class="t24 ink grow">Open File Explorer, go to Desktop</p></div>
+        <div><p class="num">2</p><p class="t24 ink grow">Right-click › New › Folder, name it my-app</p></div>
+        <div><p class="num">3</p><p class="t24 ink grow">Download a starter template (.zip)</p></div>
+        <div><p class="num">4</p><p class="t24 ink grow">Extract the .zip into my-app</p></div>
+        <div><p class="num">5</p><p class="t24 ink grow">VS Code › File › Open Folder › my-app</p></div>
+        <div><p class="num num--warn">6</p><p class="t24 ink grow">Install dependencies: <span class="warn">no button for this</span></p></div>
+        <div><p class="num num--warn">7</p><p class="t24 ink grow">Run a dev server: <span class="warn">no button either</span></p></div>
+      </div>
+      <div class="spacer"></div>
+      <p class="h3s" style="font-weight:600">7 steps · 2 dead ends · hard to repeat</p>
+    </div>
+    <div class="term" style="width:920px;flex:none">
+      <div class="term__bar"><svg class="logo logo--28" aria-hidden="true" style="color:var(--term-prompt)"><use href="#lg-vite"/></svg><span style="color:var(--term-prompt);letter-spacing:3px">TERMINAL ROUTE</span></div>
+<div class="term__body" style="line-height:1.75"><span class="p">C:\dev&gt;</span> <button class="copy c" type="button">npm create vite@latest my-app -- --template react</button>
+<span class="p">C:\dev&gt;</span> <button class="copy c" type="button">cd my-app</button>
+<span class="p">C:\dev\my-app&gt;</span> <button class="copy c" type="button">npm install</button>
+<span class="p">C:\dev\my-app&gt;</span> <button class="copy c" type="button">npm run dev</button>
+
+  VITE ready
+  → Local: http://localhost:5173/</div>
+      <div class="spacer"></div>
+      <p class="h3s" style="font-weight:600;color:var(--term-text);padding:0 32px 28px">4 commands · same result every time</p>
+    </div>
+  </div>
+  <aside class="notes">Let's make it concrete with a task you will do many times in this course: starting a new React project. On the left is the desktop route. You open File Explorer, create a folder, download a starter template, unzip it, open it in VS Code. Then you hit two dead ends: there is no button to install the project's dependencies, and no button to start a development server. Modern front-end tooling simply lives in the terminal. On the right is the terminal route: four commands. npm create vite scaffolds the project from a template, cd moves into it, npm install downloads every dependency listed in package.json, and npm run dev starts a local server at localhost port 5173. Each command on the slide is clickable and copies itself, so you can run it live. The terminal route is also repeatable: you can paste the same four lines into a README and every teammate gets exactly the same result.</aside>
+</section>
+
+<!-- 12 · Pros and cons -->
+<section class="slide" data-title="Pros and Cons">
+  <div class="head">
+    <p class="eyebrow">05 / Compare and choose</p>
+    <h2 class="title">Pros and Cons</h2>
+  </div>
+  <div class="row g32">
+    <div class="card pc-card">
+      <div class="row g16 ai-center"><svg class="logo" aria-hidden="true"><use href="#lg-windows"/></svg><h3 class="h3">Desktop (GUI)</h3></div>
+      <p class="label">+ Strengths</p>
+      <ul class="list">
+        <li>Easy to discover: every option is on screen</li>
+        <li>Best for visual work: design, images, browsing</li>
+        <li>Forgiving: Undo, Recycle Bin, confirmation dialogs</li>
+        <li>Drag and drop, previews and thumbnails</li>
+      </ul>
+      <p class="label label--warn">− Weaknesses</p>
+      <ul class="list">
+        <li>Slow for repetitive work: 100 files = 100 clicks</li>
+        <li>Hard to automate or repeat exactly</li>
+        <li>Needs a screen; most servers have none</li>
+        <li>Every window costs memory and CPU</li>
+      </ul>
+    </div>
+    <div class="card pc-card">
+      <div class="row g16 ai-center"><svg class="logo" aria-hidden="true"><use href="#lg-wt"/></svg><h3 class="h3">Terminal (CLI)</h3></div>
+      <p class="label">+ Strengths</p>
+      <ul class="list">
+        <li>Fast once you know the commands</li>
+        <li>Scriptable: one file can replay 100 steps</li>
+        <li>Works remotely over SSH, on servers and in CI</li>
+        <li>Home of front-end tools: npm, git, Vite</li>
+      </ul>
+      <p class="label label--warn">− Weaknesses</p>
+      <ul class="list">
+        <li>Steep start: you must remember commands</li>
+        <li>No undo: del skips the Recycle Bin</li>
+        <li>Error messages can be cryptic</li>
+        <li>Each shell speaks a different dialect</li>
+      </ul>
+    </div>
+  </div>
+  <p class="h3s accent" style="font-weight:600">Professionals use both: the desktop to explore, the terminal to build and repeat.</p>
+  <aside class="notes">An honest comparison, because neither one is better at everything. The desktop wins on discoverability: you can find features just by looking. It is the right tool for visual work like design in Figma, editing images or browsing. And it forgives mistakes with Undo and the Recycle Bin. Its weaknesses show up with repetition: renaming 100 files means 100 clicks, and you cannot easily record and replay what you did. Servers usually have no screen at all, and graphics cost memory. The terminal is the opposite. It is slow at first because you have to learn the commands, there is no undo, and the error messages can be cryptic. But once you know it, it is faster, it can be scripted, it works over SSH on remote servers and in automated CI pipelines, and it is where front-end tools like npm, git and Vite live. The takeaway: professionals use both. Explore with the desktop, build and repeat with the terminal.</aside>
+</section>
+
+<!-- 13 · Trends -->
+<section class="slide" data-title="Shell Usage Trends">
+  <div class="head">
+    <p class="eyebrow">05 / Compare and choose</p>
+    <h2 class="title">Shell Usage Trends</h2>
+  </div>
+  <div class="row g32">
+    <div class="col g20" style="width:540px;flex:none">
+      <div class="card stat">
+        <p class="label">Bash / Shell, 2025</p>
+        <p class="stat__value">48.7%</p>
+        <p class="t24">of developers used Bash or another Unix shell. One year earlier it was 33.9%.</p>
+        <p class="delta">+14.8 points in one year</p>
+      </div>
+      <div class="card stat grow">
+        <p class="label">PowerShell, 2025</p>
+        <p class="stat__value stat__value--sm">23.2%</p>
+        <p class="t24">up from 13.8%. CMD is not even listed as a separate option.</p>
+      </div>
+    </div>
+    <figure class="card chart grow" data-no-advance>
+      <div class="row g24 ai-center">
+        <h3 class="h3s grow" id="trend-title">Languages developers used</h3>
+        <div class="legend row g20">
+          <span class="legend__item"><span class="legend__dot legend__dot--prev"></span>2024</span>
+          <span class="legend__item"><span class="legend__dot legend__dot--now"></span>2025</span>
+        </div>
+        <button class="btn btn--small chart-toggle" type="button" aria-pressed="false">Table</button>
+      </div>
+      <p class="t24 muted">Share of all respondents · multiple answers allowed</p>
+      <div class="db" aria-labelledby="trend-title">
+        <div class="db__row" style="--a:62.3;--b:66" tabindex="0" aria-label="JavaScript: 62.3% in 2024, 66.0% in 2025">
+          <span class="db__name">JavaScript</span>
+          <span class="db__track"><span class="db__line"></span><span class="db__dot db__dot--prev"></span><span class="db__dot db__dot--now"></span><span class="db__tip">62.3% → 66.0%</span></span>
+        </div>
+        <div class="db__row" style="--a:52.9;--b:61.9" tabindex="0" aria-label="HTML/CSS: 52.9% in 2024, 61.9% in 2025">
+          <span class="db__name">HTML/CSS</span>
+          <span class="db__track"><span class="db__line"></span><span class="db__dot db__dot--prev"></span><span class="db__dot db__dot--now"></span><span class="db__tip">52.9% → 61.9%</span></span>
+        </div>
+        <div class="db__row" style="--a:51;--b:58.6" tabindex="0" aria-label="SQL: 51.0% in 2024, 58.6% in 2025">
+          <span class="db__name">SQL</span>
+          <span class="db__track"><span class="db__line"></span><span class="db__dot db__dot--prev"></span><span class="db__dot db__dot--now"></span><span class="db__tip">51.0% → 58.6%</span></span>
+        </div>
+        <div class="db__row" style="--a:51;--b:57.9" tabindex="0" aria-label="Python: 51.0% in 2024, 57.9% in 2025">
+          <span class="db__name">Python</span>
+          <span class="db__track"><span class="db__line"></span><span class="db__dot db__dot--prev"></span><span class="db__dot db__dot--now"></span><span class="db__tip">51.0% → 57.9%</span></span>
+        </div>
+        <div class="db__row is-hi" style="--a:33.9;--b:48.7" tabindex="0" aria-label="Bash/Shell: 33.9% in 2024, 48.7% in 2025">
+          <span class="db__name">Bash/Shell</span>
+          <span class="db__track"><span class="db__line"></span><span class="db__dot db__dot--prev"></span><span class="db__dot db__dot--now"></span><span class="db__val">33.9% → 48.7%</span><span class="db__tip">+14.8 points</span></span>
+        </div>
+        <div class="db__row" style="--a:38.5;--b:43.6" tabindex="0" aria-label="TypeScript: 38.5% in 2024, 43.6% in 2025">
+          <span class="db__name">TypeScript</span>
+          <span class="db__track"><span class="db__line"></span><span class="db__dot db__dot--prev"></span><span class="db__dot db__dot--now"></span><span class="db__tip">38.5% → 43.6%</span></span>
+        </div>
+        <div class="db__row is-hi" style="--a:13.8;--b:23.2" tabindex="0" aria-label="PowerShell: 13.8% in 2024, 23.2% in 2025">
+          <span class="db__name">PowerShell</span>
+          <span class="db__track"><span class="db__line"></span><span class="db__dot db__dot--prev"></span><span class="db__dot db__dot--now"></span><span class="db__val">13.8% → 23.2%</span><span class="db__tip">+9.4 points</span></span>
+        </div>
+        <div class="db__axis" aria-hidden="true">
+          <span></span>
+          <span class="db__ticks"><span style="--t:0">0%</span><span style="--t:20">20%</span><span style="--t:40">40%</span><span style="--t:60">60%</span><span style="--t:80">80%</span></span>
+        </div>
+      </div>
+      <table class="db-table" hidden>
+        <thead><tr><th>Language</th><th>2024</th><th>2025</th><th>Change</th></tr></thead>
+        <tbody>
+          <tr><td>JavaScript</td><td>62.3%</td><td>66.0%</td><td>+3.7</td></tr>
+          <tr><td>HTML/CSS</td><td>52.9%</td><td>61.9%</td><td>+9.0</td></tr>
+          <tr><td>SQL</td><td>51.0%</td><td>58.6%</td><td>+7.6</td></tr>
+          <tr><td>Python</td><td>51.0%</td><td>57.9%</td><td>+6.9</td></tr>
+          <tr class="is-hi"><td>Bash/Shell</td><td>33.9%</td><td>48.7%</td><td>+14.8</td></tr>
+          <tr><td>TypeScript</td><td>38.5%</td><td>43.6%</td><td>+5.1</td></tr>
+          <tr class="is-hi"><td>PowerShell</td><td>13.8%</td><td>23.2%</td><td>+9.4</td></tr>
+        </tbody>
+      </table>
+      <div class="spacer"></div>
+      <figcaption class="t24 muted">Source: Stack Overflow Developer Survey 2024 and 2025</figcaption>
+    </figure>
+  </div>
+  <aside class="notes">Now the real numbers, from the Stack Overflow Developer Survey, the largest yearly survey of developers. In 2025, 48.7 percent of all respondents said they used Bash or another Unix shell, up from 33.9 percent in 2024. That is almost half of all developers, and the biggest jump among the languages on this chart. PowerShell grew too, from 13.8 to 23.2 percent. Notice what is missing: CMD is not even listed as a separate option in the survey. So to answer the question "do developers use CMD more often?": no. When developers script and automate, they reach for Bash or PowerShell; CMD is for the basics. The chart shows each language as two dots, violet for 2024 and blue for 2025, so the length of the line is the growth. Hover a row to see its numbers, or press the Table button for the full data. A word of caution: the people who answer the survey change from year to year, and the 2025 survey had fewer respondents than 2024, so read the change as a trend signal rather than an exact growth rate. Likely drivers are cloud deployment, Docker, CI pipelines and the new AI coding assistants that run in the terminal, but the survey does not measure the reasons.</aside>
+</section>
+
+<!-- 14 · CMD cheat sheet -->
+<section class="slide slide--alt" data-title="CMD Cheat Sheet">
+  <div class="head">
+    <div class="row jc-between ai-baseline">
+      <p class="eyebrow">06 / Commands</p>
+      <p class="mono muted" style="font-size:24px">click any command to copy it</p>
+    </div>
+    <h2 class="title">CMD Cheat Sheet</h2>
+  </div>
+  <div class="cheat-grid">
+    <div class="card cheat-col">
+      <div class="row g12 ai-center"><svg class="icon icon--36" aria-hidden="true"><use href="#ic-search"/></svg><h3 class="h3s">Navigate</h3></div>
+      <div class="col g12">
+        <div class="cmd-item"><button class="copy" type="button">cd folder</button><p class="cmd-item__d">enter a folder</p></div>
+        <div class="cmd-item"><button class="copy" type="button">cd ..</button><p class="cmd-item__d">go up one level</p></div>
+        <div class="cmd-item"><button class="copy" type="button">cd \</button><p class="cmd-item__d">jump to the drive root</p></div>
+        <div class="cmd-item"><button class="copy" type="button">D:</button><p class="cmd-item__d">switch to drive D</p></div>
+        <div class="cmd-item"><button class="copy" type="button">dir</button><p class="cmd-item__d">list files and folders</p></div>
+        <div class="cmd-item"><button class="copy" type="button">dir /s *.js</button><p class="cmd-item__d">find .js files below here</p></div>
+        <div class="cmd-item"><button class="copy" type="button">tree /f</button><p class="cmd-item__d">folder tree with files</p></div>
+      </div>
+    </div>
+    <div class="card cheat-col">
+      <div class="row g12 ai-center"><svg class="icon icon--36" aria-hidden="true"><use href="#ic-folder"/></svg><h3 class="h3s">Files</h3></div>
+      <div class="col g12">
+        <div class="cmd-item"><button class="copy" type="button">mkdir app</button><p class="cmd-item__d">create a folder (also md)</p></div>
+        <div class="cmd-item"><button class="copy" type="button">rmdir /s /q app</button><p class="cmd-item__d">delete folder + contents</p></div>
+        <div class="cmd-item"><button class="copy" type="button">del a.txt</button><p class="cmd-item__d">delete a file for good</p></div>
+        <div class="cmd-item"><button class="copy" type="button">copy a.txt b.txt</button><p class="cmd-item__d">copy a file</p></div>
+        <div class="cmd-item"><button class="copy" type="button">move a.txt docs</button><p class="cmd-item__d">move a file</p></div>
+        <div class="cmd-item"><button class="copy" type="button">ren a.txt b.txt</button><p class="cmd-item__d">rename a file</p></div>
+        <div class="cmd-item"><button class="copy" type="button">type a.txt</button><p class="cmd-item__d">print a file's contents</p></div>
+      </div>
+    </div>
+    <div class="card cheat-col">
+      <div class="row g12 ai-center"><svg class="icon icon--36" aria-hidden="true"><use href="#ic-globe"/></svg><h3 class="h3s">System</h3></div>
+      <div class="col g12">
+        <div class="cmd-item"><button class="copy" type="button">ipconfig</button><p class="cmd-item__d">show your IP addresses</p></div>
+        <div class="cmd-item"><button class="copy" type="button">ping example.com</button><p class="cmd-item__d">test a connection</p></div>
+        <div class="cmd-item"><button class="copy" type="button">tasklist</button><p class="cmd-item__d">list running processes</p></div>
+        <div class="cmd-item"><button class="copy" type="button">taskkill /PID 42 /F</button><p class="cmd-item__d">force-stop a process</p></div>
+        <div class="cmd-item"><button class="copy" type="button">netstat -ano</button><p class="cmd-item__d">open ports and their PIDs</p></div>
+        <div class="cmd-item"><button class="copy" type="button">systeminfo</button><p class="cmd-item__d">OS and hardware details</p></div>
+        <div class="cmd-item"><button class="copy" type="button">where node</button><p class="cmd-item__d">find a program on PATH</p></div>
+      </div>
+    </div>
+    <div class="card cheat-col">
+      <div class="row g12 ai-center"><svg class="icon icon--36" aria-hidden="true"><use href="#ic-zap"/></svg><h3 class="h3s">Everyday</h3></div>
+      <div class="col g12">
+        <div class="cmd-item"><button class="copy" type="button">cls</button><p class="cmd-item__d">clear the screen</p></div>
+        <div class="cmd-item"><button class="copy" type="button">help</button><p class="cmd-item__d">list built-in commands</p></div>
+        <div class="cmd-item"><button class="copy" type="button">echo %PATH%</button><p class="cmd-item__d">print a variable</p></div>
+        <div class="cmd-item"><button class="copy" type="button">start .</button><p class="cmd-item__d">open folder in Explorer</p></div>
+        <div class="cmd-item"><button class="copy" type="button">code .</button><p class="cmd-item__d">open folder in VS Code</p></div>
+        <div class="cmd-item"><button class="copy" type="button">a &amp;&amp; b</button><p class="cmd-item__d">run b only if a succeeds</p></div>
+        <div class="cmd-item"><button class="copy" type="button">exit</button><p class="cmd-item__d">close the window</p></div>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">This is the slide to bookmark: the 28 CMD commands you will actually use, and every one of them copies itself when you click it. Navigation: cd to enter a folder, cd dot dot to go up, cd backslash to jump to the root of the drive, a drive letter with a colon to switch drives, dir to list, dir /s with a pattern to search subfolders, and tree /f to see the whole structure. Files: mkdir creates, rmdir /s /q deletes a folder with everything inside and without asking, del deletes a file permanently, plus copy, move, ren for rename, and type to print a file. System: ipconfig for your IP address, ping to test a connection, tasklist and taskkill to find and stop processes, netstat -ano to see which program holds a port, very useful when port 3000 or 5173 is busy, systeminfo, and where to locate a program on PATH. Everyday: cls clears the screen, help lists commands, echo prints variables, start dot opens the current folder in Explorer, code dot opens it in VS Code, double ampersand chains commands, and exit closes the window. Remind students: any command followed by /? shows its built-in help, for example dir /?.</aside>
+</section>
+
+<!-- 15 · Dev commands -->
+<section class="slide" data-title="Daily Commands for Front-End Work">
+  <div class="head">
+    <div class="row jc-between ai-baseline">
+      <p class="eyebrow">06 / Commands</p>
+      <p class="mono muted" style="font-size:24px">click any command to copy it</p>
+    </div>
+    <h2 class="title">Daily Commands for Front-End Work</h2>
+  </div>
+  <div class="row g32">
+    <div class="card grow g20" style="padding:32px 36px">
+      <div class="row g16 ai-center accent">
+        <svg class="logo logo--40" role="img" aria-label="Node.js"><use href="#lg-node"/></svg>
+        <svg class="logo logo--40" role="img" aria-label="npm"><use href="#lg-npm"/></svg>
+        <h3 class="h3">Node.js and npm</h3>
+      </div>
+      <div class="col">
+        <div class="dev-row"><button class="copy" type="button">node -v</button><p class="dev-row__d">check your Node.js version</p></div>
+        <div class="dev-row"><button class="copy" type="button">npm init -y</button><p class="dev-row__d">create package.json</p></div>
+        <div class="dev-row"><button class="copy" type="button">npm install</button><p class="dev-row__d">install all dependencies</p></div>
+        <div class="dev-row"><button class="copy" type="button">npm i axios</button><p class="dev-row__d">add one package</p></div>
+        <div class="dev-row"><button class="copy" type="button">npm run dev</button><p class="dev-row__d">start the dev server</p></div>
+        <div class="dev-row"><button class="copy" type="button">npm run build</button><p class="dev-row__d">build for production</p></div>
+        <div class="dev-row"><button class="copy" type="button">npx serve dist</button><p class="dev-row__d">run a tool, no install</p></div>
+      </div>
+    </div>
+    <div class="card grow g20" style="padding:32px 36px">
+      <div class="row g16 ai-center accent">
+        <svg class="logo logo--40" role="img" aria-label="Git"><use href="#lg-git"/></svg>
+        <h3 class="h3">Git</h3>
+      </div>
+      <div class="col">
+        <div class="dev-row"><button class="copy" type="button">git clone &lt;url&gt;</button><p class="dev-row__d">download a repository</p></div>
+        <div class="dev-row"><button class="copy" type="button">git status</button><p class="dev-row__d">see what changed</p></div>
+        <div class="dev-row"><button class="copy" type="button">git add .</button><p class="dev-row__d">stage all changes</p></div>
+        <div class="dev-row"><button class="copy" type="button">git commit -m "msg"</button><p class="dev-row__d">save a snapshot</p></div>
+        <div class="dev-row"><button class="copy" type="button">git push</button><p class="dev-row__d">upload your commits</p></div>
+        <div class="dev-row"><button class="copy" type="button">git pull</button><p class="dev-row__d">get the latest changes</p></div>
+        <div class="dev-row"><button class="copy" type="button">git switch -c feat</button><p class="dev-row__d">create a new branch</p></div>
+      </div>
+    </div>
+  </div>
+  <p class="t24">These work the same in CMD, PowerShell and Bash. Stop a running dev server with <span class="accent strong">Ctrl + C</span>.</p>
+  <aside class="notes">The CMD cheat sheet covers the operating system. These are the commands you will type every day as a front-end developer, and the good news is that they are identical in CMD, PowerShell and Bash, because node, npm and git are separate programs, not shell built-ins. On the left, Node and npm: check your version, create a package.json, install everything a project needs, add a single package, start the dev server, build for production, and npx to run a tool without installing it globally. On the right, Git, which we will cover in depth in a later lecture: clone a repository, check the status, stage changes, commit a snapshot with a message, push and pull to sync with GitHub, and create a branch with git switch -c. One habit to build today: Control plus C stops whatever is running, including a dev server.</aside>
+</section>
+
+<!-- 16 · Habits -->
+<section class="slide" data-title="Habits That Keep You Safe">
+  <div class="head">
+    <p class="eyebrow">06 / Commands</p>
+    <h2 class="title">Habits That Keep You Safe</h2>
+  </div>
+  <div class="row g32">
+    <div class="card grow g20" style="padding:36px 40px">
+      <div class="row g16 ai-center"><svg class="icon icon--44 accent" aria-hidden="true"><use href="#ic-key"/></svg><h3 class="h3">Keys to Remember</h3></div>
+      <div class="col">
+        <div class="key-row"><div class="key-row__k"><kbd class="kbd">Tab</kbd></div><p class="t24 grow">completes file and folder names</p></div>
+        <div class="key-row"><div class="key-row__k"><kbd class="kbd">↑ ↓</kbd></div><p class="t24 grow">scroll through previous commands</p></div>
+        <div class="key-row"><div class="key-row__k"><kbd class="kbd">Ctrl + C</kbd></div><p class="t24 grow">stops the running program</p></div>
+        <div class="key-row"><div class="key-row__k"><kbd class="kbd">F7</kbd></div><p class="t24 grow">shows your history list in CMD</p></div>
+        <div class="key-row"><div class="key-row__k"><kbd class="kbd">Ctrl + V</kbd></div><p class="t24 grow">pastes text into the terminal</p></div>
+        <div class="key-row"><div class="key-row__k"><kbd class="kbd">Drag folder</kbd></div><p class="t24 grow">drop it in the window to paste its path</p></div>
+      </div>
+    </div>
+    <div class="card grow g20" style="padding:36px 40px">
+      <div class="row g16 ai-center"><svg class="icon icon--44 warn" aria-hidden="true"><use href="#ic-warning"/></svg><h3 class="h3">Before You Press Enter</h3></div>
+      <div class="rows">
+        <div><p class="num num--warn">1</p><p class="t24 ink grow">Read the prompt first: it shows which folder you are in.</p></div>
+        <div><p class="num num--warn">2</p><p class="t24 ink grow">del and rmdir /s skip the Recycle Bin. There is no undo.</p></div>
+        <div><p class="num num--warn">3</p><p class="t24 ink grow">Wrap paths with spaces in quotes: cd "My Projects"</p></div>
+        <div><p class="num num--warn">4</p><p class="t24 ink grow">Never paste a command you do not understand.</p></div>
+        <div><p class="num num--warn">5</p><p class="t24 ink grow">Use Run as administrator only when a task needs it.</p></div>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">Two sets of habits. First, the keys that make the terminal fast. Tab completes file and folder names, so you almost never type a full path; press it again to cycle through matches. The up and down arrows bring back previous commands. Control plus C stops a running program, for example a dev server or a ping that never ends. In CMD, F7 opens a small list of your recent commands. Control plus V pastes in Windows Terminal. And you can drag a folder from File Explorer into the terminal window to paste its full path. Second, the safety rules. Always read the prompt before pressing Enter, because it tells you which folder the command will run in. Remember that del and rmdir /s delete permanently, there is no Recycle Bin. Put quotes around paths that contain spaces, otherwise the shell sees two separate arguments. Never paste a command from the internet that you do not understand. And only open an administrator terminal when a task really requires it.</aside>
+</section>
+
+<!-- 17 · Quiz 1 -->
+<section class="slide slide--alt" data-title="Quiz 1: Terminal or Shell?">
+  <div class="head">
+    <p class="eyebrow">Quiz · 1 of 4 · click an answer</p>
+    <h2 class="title">What is the difference between a terminal and a shell?</h2>
+  </div>
+  <div class="quiz" data-answer="B">
+    <button class="opt" type="button" data-opt="A"><span class="opt__key">A</span><span class="opt__text">They are two names for the same program</span><span class="opt__verdict"></span></button>
+    <button class="opt" type="button" data-opt="B"><span class="opt__key">B</span><span class="opt__text">The terminal is the window; the shell interprets the commands</span><span class="opt__verdict"></span></button>
+    <button class="opt" type="button" data-opt="C"><span class="opt__key">C</span><span class="opt__text">The shell is the window; the terminal interprets the commands</span><span class="opt__verdict"></span></button>
+    <button class="opt" type="button" data-opt="D"><span class="opt__key">D</span><span class="opt__text">Terminals exist only on Linux and macOS</span><span class="opt__verdict"></span></button>
+  </div>
+  <div class="quiz-foot">
+    <p class="quiz-answer" hidden><b>Answer: B.</b> The terminal draws text and takes your keys; the shell (CMD, PowerShell, Bash) runs the commands.</p>
+    <button class="btn quiz-reveal" type="button">Reveal answer</button>
+    <button class="btn quiz-reset" type="button" hidden>Try again</button>
+  </div>
+  <aside class="notes">Give the class 20 to 30 seconds, ask for a show of hands for each letter, then click the answer they chose, or press the letter key A to D. The correct answer is B. The terminal is only the window that displays text and captures keystrokes; the shell is the program inside it that understands and runs commands. Option C is the classic mix-up with the roles reversed. Option D is wrong because every major operating system has terminals, including Windows Terminal on Windows. Press R to reset the question.</aside>
+</section>
+
+<!-- 18 · Quiz 2 -->
+<section class="slide slide--alt" data-title="Quiz 2: cd ..">
+  <div class="head">
+    <p class="eyebrow">Quiz · 2 of 4 · click an answer</p>
+    <h2 class="title">You are in C:\Users\you\my-app and type cd .. Where are you now?</h2>
+  </div>
+  <div class="quiz" data-answer="A">
+    <button class="opt" type="button" data-opt="A"><span class="opt__key">A</span><span class="opt__text mono">C:\Users\you</span><span class="opt__verdict"></span></button>
+    <button class="opt" type="button" data-opt="B"><span class="opt__key">B</span><span class="opt__text mono">C:\</span><span class="opt__verdict"></span></button>
+    <button class="opt" type="button" data-opt="C"><span class="opt__key">C</span><span class="opt__text">Still in my-app: nothing changes</span><span class="opt__verdict"></span></button>
+    <button class="opt" type="button" data-opt="D"><span class="opt__key">D</span><span class="opt__text">An error: ".." is not a folder name</span><span class="opt__verdict"></span></button>
+  </div>
+  <div class="quiz-foot">
+    <p class="quiz-answer" hidden><b>Answer: A.</b> Two dots always mean the parent folder, so cd .. moves exactly one level up. cd \ jumps to the root.</p>
+    <button class="btn quiz-reveal" type="button">Reveal answer</button>
+    <button class="btn quiz-reset" type="button" hidden>Try again</button>
+  </div>
+  <aside class="notes">The correct answer is A, C:\Users\you. In every shell, two dots mean the parent folder and a single dot means the current folder, so cd .. goes up exactly one level. B would be the answer for cd backslash, which jumps to the root of the drive. If you have time, ask a follow-up: how would you get from my-app to the root in one command? Answer: cd \ in CMD.</aside>
+</section>
+
+<!-- 19 · Quiz 3 -->
+<section class="slide slide--alt" data-title="Quiz 3: Flags">
+  <div class="head">
+    <p class="eyebrow">Quiz · 3 of 4 · click an answer</p>
+    <h2 class="title">In npm install vite --save-dev, what is --save-dev?</h2>
+  </div>
+  <div class="quiz" data-answer="C">
+    <button class="opt" type="button" data-opt="A"><span class="opt__key">A</span><span class="opt__text">The program that runs</span><span class="opt__verdict"></span></button>
+    <button class="opt" type="button" data-opt="B"><span class="opt__key">B</span><span class="opt__text">The package being installed</span><span class="opt__verdict"></span></button>
+    <button class="opt" type="button" data-opt="C"><span class="opt__key">C</span><span class="opt__text">A flag that changes how the command behaves</span><span class="opt__verdict"></span></button>
+    <button class="opt" type="button" data-opt="D"><span class="opt__key">D</span><span class="opt__text">The folder where Vite gets saved</span><span class="opt__verdict"></span></button>
+  </div>
+  <div class="quiz-foot">
+    <p class="quiz-answer" hidden><b>Answer: C.</b> Flags start with - or --. This one records Vite as a development dependency in package.json.</p>
+    <button class="btn quiz-reveal" type="button">Reveal answer</button>
+    <button class="btn quiz-reset" type="button" hidden>Try again</button>
+  </div>
+  <aside class="notes">The correct answer is C, a flag. Go back over the anatomy: npm is the program, install is the subcommand, vite is the argument, the package name, and --save-dev is a flag because it starts with dashes and changes how the command behaves. A dev dependency is a package needed while developing and building, like Vite, but not shipped to users. Option A describes npm, option B describes vite, and option D does not exist: npm always installs into the node_modules folder.</aside>
+</section>
+
+<!-- 20 · Quiz 4 -->
+<section class="slide slide--alt" data-title="Quiz 4: True or False">
+  <div class="head">
+    <p class="eyebrow">Quiz · 4 of 4 · click True or False</p>
+    <h2 class="title">Lightning Round: True or False?</h2>
+  </div>
+  <div class="tf-list">
+    <div class="tf-row" data-answer="true">
+      <p class="num">1</p>
+      <p class="tf-row__s">PowerShell passes objects between commands, not only plain text.</p>
+      <div class="tf-btns"><button class="tf-btn" type="button" data-val="true">True</button><button class="tf-btn" type="button" data-val="false">False</button></div>
+      <p class="tf-explain" hidden><b>True.</b> Its commands exchange structured objects with properties you can filter and sort.</p>
+    </div>
+    <div class="tf-row" data-answer="false">
+      <p class="num">2</p>
+      <p class="tf-row__s">del moves files to the Recycle Bin, so you can restore them.</p>
+      <div class="tf-btns"><button class="tf-btn" type="button" data-val="true">True</button><button class="tf-btn" type="button" data-val="false">False</button></div>
+      <p class="tf-explain" hidden><b>False.</b> del deletes permanently. There is no undo in the terminal.</p>
+    </div>
+    <div class="tf-row" data-answer="true">
+      <p class="num">3</p>
+      <p class="tf-row__s">A double-click and a typed command both ask the kernel to start a process.</p>
+      <div class="tf-btns"><button class="tf-btn" type="button" data-val="true">True</button><button class="tf-btn" type="button" data-val="false">False</button></div>
+      <p class="tf-explain" hidden><b>True.</b> Explorer and the shell both end up calling CreateProcess.</p>
+    </div>
+    <div class="tf-row" data-answer="false">
+      <p class="num">4</p>
+      <p class="tf-row__s">Windows Terminal can only run CMD.</p>
+      <div class="tf-btns"><button class="tf-btn" type="button" data-val="true">True</button><button class="tf-btn" type="button" data-val="false">False</button></div>
+      <p class="tf-explain" hidden><b>False.</b> It hosts CMD, PowerShell and WSL shells, one per tab.</p>
+    </div>
+  </div>
+  <aside class="notes">Read each statement aloud, let the class shout true or false, then click their answer to reveal the explanation. One: true. PowerShell pipes structured objects with properties, which is its main difference from CMD and Bash, which pass plain text. Two: false. del deletes permanently and skips the Recycle Bin; this is exactly why the safety slide matters. Three: true. This is the big idea from the under-the-hood slide: Explorer and the shell both end up calling CreateProcess on the same kernel. Four: false. Windows Terminal is only a host; it runs CMD, PowerShell, WSL distributions like Ubuntu, and more, each in its own tab. Press R to reset the round.</aside>
+</section>
+
+<!-- 21 · Practice -->
+<section class="slide slide--photo slide--center" data-title="Practice Before Next Lecture" data-footer="none">
+  <img class="slide__bg" src="assets/img/closing-laptop-wall.jpg" alt="">
+  <div class="slide__scrim"></div>
+  <p class="eyebrow">Homework</p>
+  <h2 class="title" style="max-width:960px">Practice Before Next Lecture</h2>
+  <div class="col g24" style="width:960px">
+    <div class="task"><p class="task__n">1</p><p class="task__t">In CMD, using commands only, create my-site with index.html, css\style.css and js\app.js.</p></div>
+    <div class="task"><p class="task__n">2</p><p class="task__t">Check the result with tree /f, then open the folder with code .</p></div>
+    <div class="task"><p class="task__n">3</p><p class="task__t">Repeat it in PowerShell or Git Bash and write down which commands changed.</p></div>
+  </div>
+  <div class="row"><p class="prompt-pill"><span class="p">C:\Users\student&gt;</span> echo Questions?<span class="cursor" aria-hidden="true"></span></p></div>
+  <aside class="notes">Close with the practice task, and take questions. The homework uses only commands from today. Task one, in CMD: mkdir my-site, cd my-site, type nul > index.html, mkdir css and js, then create css\style.css and js\app.js the same way. Task two: tree /f prints the whole structure so they can check it, and code dot opens the folder in VS Code. Task three is where the real learning happens: doing the same thing in PowerShell or Git Bash, where type nul becomes New-Item or touch, and noticing which commands stayed the same and which changed. Ask them to bring their list of differences to the next lecture. Then open the floor for questions.</aside>
+</section>
+
+</div>
+</main>
+
+<!-- Toolbar -->
+<div class="toolbar" role="toolbar" aria-label="Presentation tools">
+  <button class="ui-btn" type="button" id="btn-theme" aria-label="Switch to light theme" title="Theme (T)">
+    <svg class="icon when-dark" aria-hidden="true"><use href="#ic-sun"/></svg>
+    <svg class="icon when-light" aria-hidden="true"><use href="#ic-moon"/></svg>
+  </button>
+  <button class="ui-btn" type="button" id="btn-notes" aria-pressed="false" aria-label="Speaker notes" title="Speaker notes (N)">
+    <svg class="icon" aria-hidden="true"><use href="#ic-notes"/></svg>
+  </button>
+  <button class="ui-btn" type="button" id="btn-overview" aria-label="All slides" title="All slides (O)">
+    <svg class="icon" aria-hidden="true"><use href="#ic-grid"/></svg>
+  </button>
+  <button class="ui-btn" type="button" id="btn-fullscreen" aria-pressed="false" aria-label="Full screen" title="Full screen (F)">
+    <svg class="icon" aria-hidden="true"><use href="#ic-expand"/></svg>
+  </button>
+  <span class="ui-sep" aria-hidden="true"></span>
+  <button class="ui-btn" type="button" id="btn-help" aria-label="Keyboard shortcuts" title="Shortcuts (?)">
+    <svg class="icon" aria-hidden="true"><use href="#ic-help"/></svg>
+  </button>
+</div>
+
+<!-- Slide navigation -->
+<nav class="navpill" aria-label="Slide navigation">
+  <button class="ui-btn" type="button" id="btn-prev" aria-label="Previous slide" title="Previous (←)">
+    <svg class="icon" aria-hidden="true"><use href="#ic-left"/></svg>
+  </button>
+  <span class="counter" id="counter" aria-hidden="true">1 / 21</span>
+  <button class="ui-btn" type="button" id="btn-next" aria-label="Next slide" title="Next (→)">
+    <svg class="icon" aria-hidden="true"><use href="#ic-right"/></svg>
+  </button>
+</nav>
+
+<!-- Speaker notes -->
+<aside class="notes-panel" id="notes-panel" aria-label="Speaker notes" aria-hidden="true">
+  <div class="notes-panel__head">
+    <div>
+      <p class="notes-panel__title">Speaker notes</p>
+      <p class="notes-panel__slide" id="notes-slide"></p>
+    </div>
+    <button class="ui-btn" type="button" id="btn-notes-close" aria-label="Close speaker notes">
+      <svg class="icon" aria-hidden="true"><use href="#ic-x"/></svg>
+    </button>
+  </div>
+  <div class="notes-panel__body" id="notes-body"></div>
+</aside>
+
+<!-- Overview -->
+<div class="overlay" id="overview" role="dialog" aria-modal="true" aria-labelledby="overview-title" hidden>
+  <button class="ui-btn overlay__close" type="button" data-close aria-label="Close overview">
+    <svg class="icon" aria-hidden="true"><use href="#ic-x"/></svg>
+  </button>
+  <h2 class="overlay__title" id="overview-title">All slides</h2>
+  <div class="overview__grid" id="overview-grid"></div>
+</div>
+
+<!-- Help -->
+<div class="overlay" id="help" role="dialog" aria-modal="true" aria-labelledby="help-title" hidden>
+  <button class="ui-btn overlay__close" type="button" data-close aria-label="Close shortcuts">
+    <svg class="icon" aria-hidden="true"><use href="#ic-x"/></svg>
+  </button>
+  <div class="help__card">
+    <h2 class="overlay__title" id="help-title" style="margin:0">Keyboard shortcuts</h2>
+    <dl class="help__list">
+      <dt><kbd>→</kbd><kbd>Space</kbd><kbd>PgDn</kbd></dt><dd>Next slide (or click the slide, or swipe left)</dd>
+      <dt><kbd>←</kbd><kbd>PgUp</kbd></dt><dd>Previous slide (or click the left edge, or swipe right)</dd>
+      <dt><kbd>Home</kbd><kbd>End</kbd></dt><dd>First / last slide</dd>
+      <dt><kbd>T</kbd></dt><dd>Switch dark / light theme</dd>
+      <dt><kbd>N</kbd></dt><dd>Speaker notes</dd>
+      <dt><kbd>O</kbd></dt><dd>All slides</dd>
+      <dt><kbd>F</kbd></dt><dd>Full screen</dd>
+      <dt><kbd>A</kbd>–<kbd>D</kbd></dt><dd>Answer a quiz question</dd>
+      <dt><kbd>R</kbd></dt><dd>Reset the quiz on this slide</dd>
+      <dt><kbd>Esc</kbd></dt><dd>Close panels</dd>
+    </dl>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="sr-only" id="announcer" aria-live="polite"></div>
+
+<!-- Icon sprite: UI icons (stroke) and brand logos (fill, from Simple Icons, CC0) -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <symbol id="ic-left" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></symbol>
+  <symbol id="ic-right" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></symbol>
+  <symbol id="ic-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></symbol>
+  <symbol id="ic-moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></symbol>
+  <symbol id="ic-notes" viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h6"/></symbol>
+  <symbol id="ic-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></symbol>
+  <symbol id="ic-expand" viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M16 21h3a2 2 0 0 0 2-2v-3"/></symbol>
+  <symbol id="ic-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3M12 17h.01"/></symbol>
+  <symbol id="ic-x" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></symbol>
+  <symbol id="ic-check" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></symbol>
+  <symbol id="ic-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></symbol>
+  <symbol id="ic-folder" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></symbol>
+  <symbol id="ic-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></symbol>
+  <symbol id="ic-zap" viewBox="0 0 24 24"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></symbol>
+  <symbol id="ic-key" viewBox="0 0 24 24"><circle cx="7.5" cy="15.5" r="4.5"/><path d="M10.7 12.3L21 2M16 7l3 3M18.5 4.5l2 2"/></symbol>
+  <symbol id="ic-warning" viewBox="0 0 24 24"><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></symbol>
+
+  <symbol id="lg-windows" viewBox="0 0 24 24"><path d="M0,0H11.377V11.372H0ZM12.623,0H24V11.372H12.623ZM0,12.623H11.377V24H0Zm12.623,0H24V24H12.623"/></symbol>
+  <symbol id="lg-apple" viewBox="0 0 24 24"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></symbol>
+  <symbol id="lg-linux" viewBox="0 0 24 24"><path d="M12.504 0c-.155 0-.315.008-.48.021-4.226.333-3.105 4.807-3.17 6.298-.076 1.092-.3 1.953-1.05 3.02-.885 1.051-2.127 2.75-2.716 4.521-.278.832-.41 1.684-.287 2.489a.424.424 0 00-.11.135c-.26.268-.45.6-.663.839-.199.199-.485.267-.797.4-.313.136-.658.269-.864.68-.09.189-.136.394-.132.602 0 .199.027.4.055.536.058.399.116.728.04.97-.249.68-.28 1.145-.106 1.484.174.334.535.47.94.601.81.2 1.91.135 2.774.6.926.466 1.866.67 2.616.47.526-.116.97-.464 1.208-.946.587-.003 1.23-.269 2.26-.334.699-.058 1.574.267 2.577.2.025.134.063.198.114.333l.003.003c.391.778 1.113 1.132 1.884 1.071.771-.06 1.592-.536 2.257-1.306.631-.765 1.683-1.084 2.378-1.503.348-.199.629-.469.649-.853.023-.4-.2-.811-.714-1.376v-.097l-.003-.003c-.17-.2-.25-.535-.338-.926-.085-.401-.182-.786-.492-1.046h-.003c-.059-.054-.123-.067-.188-.135a.357.357 0 00-.19-.064c.431-1.278.264-2.55-.173-3.694-.533-1.41-1.465-2.638-2.175-3.483-.796-1.005-1.576-1.957-1.56-3.368.026-2.152.236-6.133-3.544-6.139zm.529 3.405h.013c.213 0 .396.062.584.198.19.135.33.332.438.533.105.259.158.459.166.724 0-.02.006-.04.006-.06v.105a.086.086 0 01-.004-.021l-.004-.024a1.807 1.807 0 01-.15.706.953.953 0 01-.213.335.71.71 0 00-.088-.042c-.104-.045-.198-.064-.284-.133a1.312 1.312 0 00-.22-.066c.05-.06.146-.133.183-.198.053-.128.082-.264.088-.402v-.02a1.21 1.21 0 00-.061-.4c-.045-.134-.101-.2-.183-.333-.084-.066-.167-.132-.267-.132h-.016c-.093 0-.176.03-.262.132a.8.8 0 00-.205.334 1.18 1.18 0 00-.09.4v.019c.002.089.008.179.02.267-.193-.067-.438-.135-.607-.202a1.635 1.635 0 01-.018-.2v-.02a1.772 1.772 0 01.15-.768c.082-.22.232-.406.43-.533a.985.985 0 01.594-.2zm-2.962.059h.036c.142 0 .27.048.399.135.146.129.264.288.344.465.09.199.14.4.153.667v.004c.007.134.006.2-.002.266v.08c-.03.007-.056.018-.083.024-.152.055-.274.135-.393.2.012-.09.013-.18.003-.267v-.015c-.012-.133-.04-.2-.082-.333a.613.613 0 00-.166-.267.248.248 0 00-.183-.064h-.021c-.071.006-.13.04-.186.132a.552.552 0 00-.12.27.944.944 0 00-.023.33v.015c.012.135.037.2.08.334.046.134.098.2.166.268.01.009.02.018.034.024-.07.057-.117.07-.176.136a.304.304 0 01-.131.068 2.62 2.62 0 01-.275-.402 1.772 1.772 0 01-.155-.667 1.759 1.759 0 01.08-.668 1.43 1.43 0 01.283-.535c.128-.133.26-.2.418-.2zm1.37 1.706c.332 0 .733.065 1.216.399.293.2.523.269 1.052.468h.003c.255.136.405.266.478.399v-.131a.571.571 0 01.016.47c-.123.31-.516.643-1.063.842v.002c-.268.135-.501.333-.775.465-.276.135-.588.292-1.012.267a1.139 1.139 0 01-.448-.067 3.566 3.566 0 01-.322-.198c-.195-.135-.363-.332-.612-.465v-.005h-.005c-.4-.246-.616-.512-.686-.71-.07-.268-.005-.47.193-.6.224-.135.38-.271.483-.336.104-.074.143-.102.176-.131h.002v-.003c.169-.202.436-.47.839-.601.139-.036.294-.065.466-.065zm2.8 2.142c.358 1.417 1.196 3.475 1.735 4.473.286.534.855 1.659 1.102 3.024.156-.005.33.018.513.064.646-1.671-.546-3.467-1.089-3.966-.22-.2-.232-.335-.123-.335.59.534 1.365 1.572 1.646 2.757.13.535.16 1.104.021 1.67.067.028.135.06.205.067 1.032.534 1.413.938 1.23 1.537v-.043c-.06-.003-.12 0-.18 0h-.016c.151-.467-.182-.825-1.065-1.224-.915-.4-1.646-.336-1.77.465-.008.043-.013.066-.018.135-.068.023-.139.053-.209.064-.43.268-.662.669-.793 1.187-.13.533-.17 1.156-.205 1.869v.003c-.02.334-.17.838-.319 1.35-1.5 1.072-3.58 1.538-5.348.334a2.645 2.645 0 00-.402-.533 1.45 1.45 0 00-.275-.333c.182 0 .338-.03.465-.067a.615.615 0 00.314-.334c.108-.267 0-.697-.345-1.163-.345-.467-.931-.995-1.788-1.521-.63-.4-.986-.87-1.15-1.396-.165-.534-.143-1.085-.015-1.645.245-1.07.873-2.11 1.274-2.763.107-.065.037.135-.408.974-.396.751-1.14 2.497-.122 3.854a8.123 8.123 0 01.647-2.876c.564-1.278 1.743-3.504 1.836-5.268.048.036.217.135.289.202.218.133.38.333.59.465.21.201.477.335.876.335.039.003.075.006.11.006.412 0 .73-.134.997-.268.29-.134.52-.334.74-.4h.005c.467-.135.835-.402 1.044-.7zm2.185 8.958c.037.6.343 1.245.882 1.377.588.134 1.434-.333 1.791-.765l.211-.01c.315-.007.577.01.847.268l.003.003c.208.199.305.53.391.876.085.4.154.78.409 1.066.486.527.645.906.636 1.14l.003-.007v.018l-.003-.012c-.015.262-.185.396-.498.595-.63.401-1.746.712-2.457 1.57-.618.737-1.37 1.14-2.036 1.191-.664.053-1.237-.2-1.574-.898l-.005-.003c-.21-.4-.12-1.025.056-1.69.176-.668.428-1.344.463-1.897.037-.714.076-1.335.195-1.814.12-.465.308-.797.641-.984l.045-.022zm-10.814.049h.01c.053 0 .105.005.157.014.376.055.706.333 1.023.752l.91 1.664.003.003c.243.533.754 1.064 1.189 1.637.434.598.77 1.131.729 1.57v.006c-.057.744-.48 1.148-1.125 1.294-.645.135-1.52.002-2.395-.464-.968-.536-2.118-.469-2.857-.602-.369-.066-.61-.2-.723-.4-.11-.2-.113-.602.123-1.23v-.004l.002-.003c.117-.334.03-.752-.027-1.118-.055-.401-.083-.71.043-.94.16-.334.396-.4.69-.533.294-.135.64-.202.915-.47h.002v-.002c.256-.268.445-.601.668-.838.19-.201.38-.336.663-.336zm7.159-9.074c-.435.201-.945.535-1.488.535-.542 0-.97-.267-1.28-.466-.154-.134-.28-.268-.373-.335-.164-.134-.144-.333-.074-.333.109.016.129.134.199.2.096.066.215.2.36.333.292.2.68.467 1.167.467.485 0 1.053-.267 1.398-.466.195-.135.445-.334.648-.467.156-.136.149-.267.279-.267.128.016.034.134-.147.332a8.097 8.097 0 01-.69.468zm-1.082-1.583V5.64c-.006-.02.013-.042.029-.05.074-.043.18-.027.26.004.063 0 .16.067.15.135-.006.049-.085.066-.135.066-.055 0-.092-.043-.141-.068-.052-.018-.146-.008-.163-.065zm-.551 0c-.02.058-.113.049-.166.066-.047.025-.086.068-.14.068-.05 0-.13-.02-.136-.068-.01-.066.088-.133.15-.133.08-.031.184-.047.259-.005.019.009.036.03.03.05v.02h.003z"/></symbol>
+  <symbol id="lg-wt" viewBox="0 0 24 24"><path d="M8.165 6V3h7.665v3H8.165zm-.5-3H1c-.55 0-1 .45-1 1v2h7.665V3zM23 3h-6.67v3H24V4c0-.55-.45-1-1-1zM0 6.5h24V20c0 .55-.45 1-1 1H1c-.55 0-1-.45-1-1V6.5zM11.5 18c0 .3.2.5.5.5h8c.3 0 .5-.2.5-.5v-1.5c0-.3-.2-.5-.5-.5h-8c-.3 0-.5.2-.5.5V18zm-5.2-4.55l-3.1 3.1c-.25.25-.25.6 0 .8l.9.9c.25.25.6.25.8 0l4.4-4.4a.52.52 0 0 0 0-.8l-4.4-4.4c-.2-.2-.6-.2-.8 0l-.9.9c-.25.2-.25.55 0 .8l3.1 3.1z"/></symbol>
+  <symbol id="lg-iterm2" viewBox="0 0 24 24"><path d="M24 5.359v13.282A5.36 5.36 0 0 1 18.641 24H5.359A5.36 5.36 0 0 1 0 18.641V5.359A5.36 5.36 0 0 1 5.359 0h13.282A5.36 5.36 0 0 1 24 5.359m-.932-.233A4.196 4.196 0 0 0 18.874.932H5.126A4.196 4.196 0 0 0 .932 5.126v13.748a4.196 4.196 0 0 0 4.194 4.194h13.748a4.196 4.196 0 0 0 4.194-4.194zm-.816.233v13.282a3.613 3.613 0 0 1-3.611 3.611H5.359a3.613 3.613 0 0 1-3.611-3.611V5.359a3.613 3.613 0 0 1 3.611-3.611h13.282a3.613 3.613 0 0 1 3.611 3.611M8.854 4.194v6.495h.962V4.194zM5.483 9.493v1.085h.597V9.48q.283-.037.508-.133.373-.165.575-.448.208-.284.208-.649a.9.9 0 0 0-.171-.568 1.4 1.4 0 0 0-.426-.388 3 3 0 0 0-.544-.261 32 32 0 0 0-.545-.209 1.8 1.8 0 0 1-.426-.216q-.164-.12-.164-.284 0-.223.179-.351.18-.126.485-.127.344 0 .575.105.239.105.5.298l.433-.5a2.3 2.3 0 0 0-.605-.433 1.6 1.6 0 0 0-.582-.159v-.968h-.597v.978a2 2 0 0 0-.477.127 1.2 1.2 0 0 0-.545.411q-.194.268-.194.634 0 .335.164.56.164.224.418.38a4 4 0 0 0 .552.262q.291.104.545.209.261.104.425.238a.39.39 0 0 1 .165.321q0 .225-.187.359-.18.134-.537.134-.381 0-.717-.134a4.4 4.4 0 0 1-.649-.351l-.388.589q.209.173.477.306.276.135.575.217.191.046.373.064"/></symbol>
+  <symbol id="lg-vscode" viewBox="0 0 24 24"><path d="M23.15 2.587L18.21.21a1.494 1.494 0 0 0-1.705.29l-9.46 8.63-4.12-3.128a.999.999 0 0 0-1.276.057L.327 7.261A1 1 0 0 0 .326 8.74L3.899 12 .326 15.26a1 1 0 0 0 .001 1.479L1.65 17.94a.999.999 0 0 0 1.276.057l4.12-3.128 9.46 8.63a1.492 1.492 0 0 0 1.704.29l4.942-2.377A1.5 1.5 0 0 0 24 20.06V3.939a1.5 1.5 0 0 0-.85-1.352zm-5.146 14.861L10.826 12l7.178-5.448v10.896z"/></symbol>
+  <symbol id="lg-powershell" viewBox="0 0 24 24"><path d="M23.181 2.974c.568 0 .923.463.792 1.035l-3.659 15.982c-.13.572-.697 1.035-1.265 1.035H.819c-.568 0-.923-.463-.792-1.035L3.686 4.009c.13-.572.697-1.035 1.265-1.035zm-8.375 9.346c.251-.394.227-.905-.09-1.243L9.122 5.125c-.38-.404-1.037-.407-1.466-.003-.429.402-.468 1.056-.088 1.46l4.662 4.96v.11l-7.42 5.374c-.45.327-.533.977-.187 1.453.346.476.991.597 1.44.27l8.229-5.91c.28-.196.438-.365.514-.52zm-2.796 4.399a.928.928 0 00-.934.923c0 .51.418.923.934.923h4.433a.928.928 0 00.934-.923.928.928 0 00-.934-.923z"/></symbol>
+  <symbol id="lg-bash" viewBox="0 0 24 24"><path d="M21.038,4.9l-7.577-4.498C13.009,0.134,12.505,0,12,0c-0.505,0-1.009,0.134-1.462,0.403L2.961,4.9 C2.057,5.437,1.5,6.429,1.5,7.503v8.995c0,1.073,0.557,2.066,1.462,2.603l7.577,4.497C10.991,23.866,11.495,24,12,24 c0.505,0,1.009-0.134,1.461-0.402l7.577-4.497c0.904-0.537,1.462-1.529,1.462-2.603V7.503C22.5,6.429,21.943,5.437,21.038,4.9z M15.17,18.946l0.013,0.646c0.001,0.078-0.05,0.167-0.111,0.198l-0.383,0.22c-0.061,0.031-0.111-0.007-0.112-0.085L14.57,19.29 c-0.328,0.136-0.66,0.169-0.872,0.084c-0.04-0.016-0.057-0.075-0.041-0.142l0.139-0.584c0.011-0.046,0.036-0.092,0.069-0.121 c0.012-0.011,0.024-0.02,0.036-0.026c0.022-0.011,0.043-0.014,0.062-0.006c0.229,0.077,0.521,0.041,0.802-0.101 c0.357-0.181,0.596-0.545,0.592-0.907c-0.003-0.328-0.181-0.465-0.613-0.468c-0.55,0.001-1.064-0.107-1.072-0.917 c-0.007-0.667,0.34-1.361,0.889-1.8l-0.007-0.652c-0.001-0.08,0.048-0.168,0.111-0.2l0.37-0.236 c0.061-0.031,0.111,0.007,0.112,0.087l0.006,0.653c0.273-0.109,0.511-0.138,0.726-0.088c0.047,0.012,0.067,0.076,0.048,0.151 l-0.144,0.578c-0.011,0.044-0.036,0.088-0.065,0.116c-0.012,0.012-0.025,0.021-0.038,0.028c-0.019,0.01-0.038,0.013-0.057,0.009 c-0.098-0.022-0.332-0.073-0.699,0.113c-0.385,0.195-0.52,0.53-0.517,0.778c0.003,0.297,0.155,0.387,0.681,0.396 c0.7,0.012,1.003,0.318,1.01,1.023C16.105,17.747,15.736,18.491,15.17,18.946z M19.143,17.859c0,0.06-0.008,0.116-0.058,0.145 l-1.916,1.164c-0.05,0.029-0.09,0.004-0.09-0.056v-0.494c0-0.06,0.037-0.093,0.087-0.122l1.887-1.129 c0.05-0.029,0.09-0.004,0.09,0.056V17.859z M20.459,6.797l-7.168,4.427c-0.894,0.523-1.553,1.109-1.553,2.187v8.833 c0,0.645,0.26,1.063,0.66,1.184c-0.131,0.023-0.264,0.039-0.398,0.039c-0.42,0-0.833-0.114-1.197-0.33L3.226,18.64 c-0.741-0.44-1.201-1.261-1.201-2.142V7.503c0-0.881,0.46-1.702,1.201-2.142l7.577-4.498c0.363-0.216,0.777-0.33,1.197-0.33 c0.419,0,0.833,0.114,1.197,0.33l7.577,4.498c0.624,0.371,1.046,1.013,1.164,1.732C21.686,6.557,21.12,6.411,20.459,6.797z"/></symbol>
+  <symbol id="lg-zsh" viewBox="0 0 24 24"><path d="M11.415 5.038a.58.58 0 0 0-.543.197L.135 18.021a.58.58 0 0 0 .071.814.58.58 0 0 0 .815-.07L11.757 5.979a.58.58 0 0 0-.07-.815.6.6 0 0 0-.272-.126m-8.113.317a3.133 3.133 0 0 0-3.12 3.12 3.13 3.13 0 0 0 3.12 3.119A3.133 3.133 0 0 0 6.42 8.475a3.13 3.13 0 0 0-3.119-3.119m0 1.806a1.3 1.3 0 0 1 1.314 1.313 1.3 1.3 0 0 1-1.314 1.312A1.3 1.3 0 0 1 1.99 8.475a1.3 1.3 0 0 1 1.312-1.314m5.253 5.253a3.13 3.13 0 0 0-3.119 3.119 3.13 3.13 0 0 0 3.12 3.118 3.133 3.133 0 0 0 3.118-3.12 3.133 3.133 0 0 0-3.119-3.118m0 1.805a1.3 1.3 0 0 1 1.313 1.314c0 .735-.577 1.312-1.312 1.312a1.3 1.3 0 0 1-1.314-1.312 1.3 1.3 0 0 1 1.313-1.314m7.201 3.276a.58.58 0 0 0-.578.578.58.58 0 0 0 .578.578h7.666a.58.58 0 0 0 .579-.578.58.58 0 0 0-.579-.578Z"/></symbol>
+  <symbol id="lg-ubuntu" viewBox="0 0 24 24"><path d="M17.61.455a3.41 3.41 0 0 0-3.41 3.41 3.41 3.41 0 0 0 3.41 3.41 3.41 3.41 0 0 0 3.41-3.41 3.41 3.41 0 0 0-3.41-3.41zM12.92.8C8.923.777 5.137 2.941 3.148 6.451a4.5 4.5 0 0 1 .26-.007 4.92 4.92 0 0 1 2.585.737A8.316 8.316 0 0 1 12.688 3.6 4.944 4.944 0 0 1 13.723.834 11.008 11.008 0 0 0 12.92.8zm9.226 4.994a4.915 4.915 0 0 1-1.918 2.246 8.36 8.36 0 0 1-.273 8.303 4.89 4.89 0 0 1 1.632 2.54 11.156 11.156 0 0 0 .559-13.089zM3.41 7.932A3.41 3.41 0 0 0 0 11.342a3.41 3.41 0 0 0 3.41 3.409 3.41 3.41 0 0 0 3.41-3.41 3.41 3.41 0 0 0-3.41-3.41zm2.027 7.866a4.908 4.908 0 0 1-2.915.358 11.1 11.1 0 0 0 7.991 6.698 11.234 11.234 0 0 0 2.422.249 4.879 4.879 0 0 1-.999-2.85 8.484 8.484 0 0 1-.836-.136 8.304 8.304 0 0 1-5.663-4.32zm11.405.928a3.41 3.41 0 0 0-3.41 3.41 3.41 3.41 0 0 0 3.41 3.41 3.41 3.41 0 0 0 3.41-3.41 3.41 3.41 0 0 0-3.41-3.41z"/></symbol>
+  <symbol id="lg-gnometerm" viewBox="0 0 24 24"><path d="M1.846 0A1.841 1.841 0 000 1.846v18.463c0 1.022.823 1.845 1.846 1.845h20.308A1.841 1.841 0 0024 20.31V1.846A1.841 1.841 0 0022.154 0H1.846zm0 .924h20.308c.512 0 .922.41.922.922v18.463c0 .511-.41.921-.922.921H1.846a.919.919 0 01-.922-.921V1.846c0-.512.41-.922.922-.922zm0 .922v18.463h20.308V1.846H1.846zm1.845 2.14l3.235 1.758v.836L3.69 8.477V7.385l2.243-1.207v-.033L3.69 5.076v-1.09zM7.846 9.23h3.693v.924H7.846V9.23zM0 21.736v.418C0 23.177.823 24 1.846 24h20.308A1.841 1.841 0 0024 22.154v-.418a2.334 2.334 0 01-1.846.918H1.846A2.334 2.334 0 010 21.736Z"/></symbol>
+  <symbol id="lg-node" viewBox="0 0 24 24"><path d="M11.998,24c-0.321,0-0.641-0.084-0.922-0.247l-2.936-1.737c-0.438-0.245-0.224-0.332-0.08-0.383 c0.585-0.203,0.703-0.25,1.328-0.604c0.065-0.037,0.151-0.023,0.218,0.017l2.256,1.339c0.082,0.045,0.197,0.045,0.272,0l8.795-5.076 c0.082-0.047,0.134-0.141,0.134-0.238V6.921c0-0.099-0.053-0.192-0.137-0.242l-8.791-5.072c-0.081-0.047-0.189-0.047-0.271,0 L3.075,6.68C2.99,6.729,2.936,6.825,2.936,6.921v10.15c0,0.097,0.054,0.189,0.139,0.235l2.409,1.392 c1.307,0.654,2.108-0.116,2.108-0.89V7.787c0-0.142,0.114-0.253,0.256-0.253h1.115c0.139,0,0.255,0.112,0.255,0.253v10.021 c0,1.745-0.95,2.745-2.604,2.745c-0.508,0-0.909,0-2.026-0.551L2.28,18.675c-0.57-0.329-0.922-0.945-0.922-1.604V6.921 c0-0.659,0.353-1.275,0.922-1.603l8.795-5.082c0.557-0.315,1.296-0.315,1.848,0l8.794,5.082c0.57,0.329,0.924,0.944,0.924,1.603 v10.15c0,0.659-0.354,1.273-0.924,1.604l-8.794,5.078C12.643,23.916,12.324,24,11.998,24z M19.099,13.993 c0-1.9-1.284-2.406-3.987-2.763c-2.731-0.361-3.009-0.548-3.009-1.187c0-0.528,0.235-1.233,2.258-1.233 c1.807,0,2.473,0.389,2.747,1.607c0.024,0.115,0.129,0.199,0.247,0.199h1.141c0.071,0,0.138-0.031,0.186-0.081 c0.048-0.054,0.074-0.123,0.067-0.196c-0.177-2.098-1.571-3.076-4.388-3.076c-2.508,0-4.004,1.058-4.004,2.833 c0,1.925,1.488,2.457,3.895,2.695c2.88,0.282,3.103,0.703,3.103,1.269c0,0.983-0.789,1.402-2.642,1.402 c-2.327,0-2.839-0.584-3.011-1.742c-0.02-0.124-0.126-0.215-0.253-0.215h-1.137c-0.141,0-0.254,0.112-0.254,0.253 c0,1.482,0.806,3.248,4.655,3.248C17.501,17.007,19.099,15.91,19.099,13.993z"/></symbol>
+  <symbol id="lg-npm" viewBox="0 0 24 24"><path d="M1.763 0C.786 0 0 .786 0 1.763v20.474C0 23.214.786 24 1.763 24h20.474c.977 0 1.763-.786 1.763-1.763V1.763C24 .786 23.214 0 22.237 0zM5.13 5.323l13.837.019-.009 13.836h-3.464l.01-10.382h-3.456L12.04 19.17H5.113z"/></symbol>
+  <symbol id="lg-git" viewBox="0 0 24 24"><path d="M13.09 23.549a1.54 1.54 0 0 1-2.18 0L.451 13.089a1.54 1.54 0 0 1 0-2.179l7.191-7.19 2.733 2.733a1.85 1.85 0 0 0 .964 2.326v6.66a1.849 1.849 0 1 0 1.54 0V8.957l2.508 2.508a1.85 1.85 0 1 0 1.09-1.09l-2.634-2.634a1.85 1.85 0 0 0-2.378-2.377L8.73 2.63 10.91.451a1.54 1.54 0 0 1 2.179 0l10.459 10.46a1.54 1.54 0 0 1 0 2.179z"/></symbol>
+  <symbol id="lg-vite" viewBox="0 0 24 24"><path d="M13.056 23.238a.57.57 0 0 1-1.02-.355v-5.202c0-.63-.512-1.143-1.144-1.143H5.148a.57.57 0 0 1-.464-.903l3.777-5.29c.54-.753 0-1.804-.93-1.804H.57a.574.574 0 0 1-.543-.746.6.6 0 0 1 .08-.157L5.008.78a.57.57 0 0 1 .467-.24h14.589a.57.57 0 0 1 .466.903l-3.778 5.29c-.54.755 0 1.806.93 1.806h5.745c.238 0 .424.138.513.322a.56.56 0 0 1-.063.603z"/></symbol>
+</svg>
+
+</body>
+</html>
